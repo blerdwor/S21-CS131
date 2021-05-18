@@ -2,7 +2,7 @@
 
 These are my solutions to the homeworks for CS 131 - Programming Languages, taken during Spring 2021.
 
-Taught by Professor Paul Eggert.
+Taught by Professor Paul Eggert. https://web.cs.ucla.edu/classes/spring21/cs131/index.html
 
 | Homework | Score  |
 | -------- | ------ |
