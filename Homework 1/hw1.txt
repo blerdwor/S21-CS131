@@ -1,0 +1,36 @@
+I referenced the TA slides and read Ocaml documentation. I also used 
+functions from the List module as they provided the functionality that
+I needed. 
+
+subset: I tried making it as easy to read as possible because I was struggling 
+to understand how to write Ocaml code. So I have pattern matching with an 
+if statement despite this being bad style because it was easy to understand.
+It was really challenging to learn how to write in Ocaml for me as I've never
+used a functional language before.
+
+equal_sets: I used subset to implement equal_sets because mathematically, 
+two sets are only subsets of each other if they are equal.
+
+set_union: I created a helper function to extract elements unique to a set and
+then I was able to extract the unique elements from set b and directly append
+them to set a. This way was the most straightforward way I could think of so I
+implemented this function as so.
+
+set_all_union: It was straightforward to use set_union to merge the sets one 
+by one after recursively calling set_all_union on each of its members.   
+
+self_member: explanation in "hw1.ml"
+
+computed_fixed_point: I got a lot of hints from Dis 1B and thought about how
+the function can converge to a fixed point by recursively calling itself on f(x).
+
+filter_reachable: I tried using equal_sets and computed_fixed_point from the
+discussion hints but I wasn't able to figure it out. Instead I kept filtering the
+data into smaller and smaller pieces and worked with them that way. It was
+hard to figure out how to process the data because iteration isn't allowed so I
+wrote everything recursively. I spent a lot of time figuring out how to re-
+construct lists properly and make sure that I was filtering the data correctly.
+
+One weakness is that the function set_union isn't optimal (uses the @ operator) 
+which doesn't affect its functionality but could be improved. At the time, I was 
+confused on the different between @ and ::
