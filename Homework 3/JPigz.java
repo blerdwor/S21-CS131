@@ -1,3 +1,5 @@
+// TA Starter Code to illustrate how to perform compression
+
 import java.util.zip.*;
 import java.io.*;
 import java.nio.file.*;
