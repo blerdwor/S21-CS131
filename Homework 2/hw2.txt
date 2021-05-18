@@ -1,0 +1,90 @@
+I wrote make_parser in terms of make_matcher in the sense that I used the exact
+same traversal structure. So the two mutual recursive helper functions for make
+Based on discussion hints, I felt that it was easiest to copy the make_matcher
+code and then modify it to make a parse tree. So the functions are nearly
+identical save the return values. I decided to write make_matcher first because
+we went over an example of how the algorithm should run in Discussion so I was
+more comfortable with that question. I first traced through an example by hand
+and tried to think about what types of tasks I needed to perform. I first wrote
+a function to recurse through the different rules and then another function to
+parse through the different symbols within a rule. I lated realized these two
+needed to be mutually recursive as I needed to expand non-terminal symbols from
+inside a rules list. Originally I also had a separate function to handle
+terminal symbols and check them against the fragment, however, I realized it
+wasn't necessary as I could just nest the match statements. 
+
+In make_matcher, the function returns whatever the acceptor functions return.
+However, in make_parser the function needs to return either None or a parse
+tree. Both of these functions traverse the grammar in the top-down manner and
+going through the rules from first to last. Because of this commonality, I felt
+that it would be easier to just tweak my functions for make_matcher. One thing
+I changed from make_matcher to make_parser is that difference is that 
+make_parser has a hard-coded acceptor while make_matcher needs an acceptor to
+be passed in. This is because in the spec, it is required that "If frag 
+cannot be parsed entirely ... the parser returns None" which means that the
+acceptor for this case will only accept empty fragments. So I wrote a specific
+acceptor function to perform that task. Another thing that I changed is that
+in a helper function parse_symbols, if we've exhausted all the symbols in a
+rule, I pass an additional tree node to the acceptor instead of just the 
+fragment. In this way, I was able to construct the tree because the acceptor
+will return the tree node only if the fragment was completely matched and is
+empty. In order to support this change, I also added two additonal parameters
+to parse_rules and parse_symbols which was start_sym and child_nodes. These
+two paramaters are necessary for constructing the parse tree (start_sym
+signifies the symbol of a specific node while child_nodes assumulates the
+child nodes and the fragment is parsed). Lastly, I also passed in concatenated
+lists to form the tree when matching symbols. Before in make_matcher, I didn't
+need to do this since we weren't interested in building anything. However,
+for make_parser this was necessary to keep constructing the tree.
+
+For make_matcher, one large fallback that I discovered while testing
+on my own grammar is that this function fails when called on a grammar where
+a non-terminal symbol's rule contains itself. It results in a stack overflow 
+error. One of the rules that I had previously written was (using the same
+grammar I defined in my hw2test.ml file):
+
+let terrible_rules = function
+     | Meme ->
+         [[N Words; N Meme; N Words];
+         ... 
+
+After calling make_matcher on this, the function kept recursing in an
+infinite loop between expanding Meme into the first rule and then parsing it
+and expanding into Meme again. The matcher won't be able to match any symbols
+after Meme. Similarly, the matcher function can't handle left-recursive grammar
+either like:
+
+let terrible_rules = function
+     | Meme ->
+         [[N Meme; N Words; N Words];
+         ...
+
+This is because the matcher parses the grammar rules from left to right. This
+means that the function will keep expanding Meme into the very rule that also
+contains Meme, and thus never end. This would also result in another stack 
+overflow error from the repeated recursive calls. One solution to this
+would be to write a function that parses right to left, however, it would still
+fall short when encountering a grammar that is right-recursive. In other words,
+if the grammar contained a nonterminal whose rule's rightmost element contained
+itself. The solution that I chose was simply to just create a grammar in 
+hw2test.ml that was free of nonterminals with rules containing itself. In this 
+way, any issues with left-recursivity are eliminated grammar. Addtionally, it 
+was mentioned in discussion that we should take care to avoid creating left-
+recursive grammar when testing.
+
+Similarly, since I structured make_parser in the exact same design as make_
+matcher, it is also unreliable when handling left-recursive grammar. It won't
+be able to construct a parse tree using grammar where a nonterminal symbol's
+rule contains itself as it will fall into an infinite loop. I think that my
+make_parser function would also perform relatively poorly on large fragments
+as the "@" operator has a slower runtime than "::". However, since I needed
+to append two lists together instead of inserting an object at the front of
+a list, I wasn't able to use the "::" to add the Leaf nodes to the back of
+the child_nodes list. 
+
+Lastly, a large inherent weakness in my program is the amount of repeated code.
+I would have prefered to have written the parse_rules and parse_symbol functions 
+in a more generic fashion so as to utilize their common traversal method, while 
+being able to modify the return values. This resulted in a lot of duplicated 
+code, however I wasn't able to figure out how to write the functions in a way
+that allowed for flexibility.
