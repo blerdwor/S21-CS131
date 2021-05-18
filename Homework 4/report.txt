@@ -1,0 +1,102 @@
+%%%%%%%%%% NO-OP KENKEN %%%%%%%%%%%
+
+An example call would look like this: 
+?- noop_kenken(2,
+               [[3, [[1|1], [2|1]]]
+                [3, [[1|2], [2,2]]]],
+               [+],
+               T,
+               F
+              ).
+
+Upon success, noop_kenken will have unified T to a filled NxN grid whose rows and columns 
+have no repeating numbers. It will also unify F to an assignment of operations to each cage
+accordingly such that T is a solution to the regular kenken puzzle. When prompted for other
+paths, noop_kenken can give other T's and F's if there are other solutions possible. I tried
+researching it but wouldn't determine if all no operation kenken puzzles have unique solutions,
+but I think that with a large enough grid and using all 5 operators, there could be multiple
+solutions. 
+Upon failure, meaning that a solution can't be found for the given size, target values
+and cages, and operators, Prolog will just say no.  
+
+
+noop_kenken/5 takes these parameters:
+
+N - the size of the grid
+C - a list of list pairs containing a cage's target value and a list of that cage's squares 
+    eg. [[4, [2|3]], [28, [3|1], [3|2], [2|2]]]
+    A list with more than 2 squares will only be considered for + and *. 
+    A list with exactly 2 squares will be considered for + * - and /.
+    A list with exactly 1 square will only be considered for @.
+O - a list of operations used because not every puzzle uses every operation
+    eg. the possible operations are + - * / and @ which signifies a single square
+T - the solved kenken grid will be unified to T
+F - a list of list pairs of each cage's operation and the cage's rightmost-topmost square  
+    eg. [[+, [1|1]], [/, [3|2]], [*, [1|3]]]
+
+
+Example behavior:
+
+noop_kenken_testcase(
+  3,
+  [
+   [1, [1|1], [2|1]],
+   [1, [[1|2], [1|3]]],
+   [3, [3|1]],
+   [2, [[2|2], [3|2]]],
+   [3, [2|3], [3|3]]
+  ],
+  [+, -, /, @]
+).
+
+The query:
+?- noop_kenken_testcase(N,C,O), noop_kenken(N,C,O,T,F).
+
+should output (after formatting):
+C = [[1,[1|1],[2|1]],[1,[[1|2],[1|3]]],[3,[3|1]],
+    [2,[[2|2],[3|2]]],[3,[2|3],[3|3]]]
+N = 3
+O = [+, -, /, @]
+T = [[1,3,2],
+     [2,1,3],
+     [3,2,1]] 
+F = [[-,[1|1]],
+     [-,[1|2]],
+     [@,[3|1]],
+     [/,[[2|2]],
+     [3,[2|3]]] ?
+
+/* If there are more solutions, then when answered with ; 
+   if will output different T and F. Otherwise, Prolog 
+   will end with no. */
+
+%%%%%%%%%% STATISTICS %%%%%%%%%%
+
+I did three test trials for kenken and plain_kenken on a 4x4 grid that I included in kenken.pl.
+kenken with the finite domain solver took about 0 seconds for the puzzle while the plain_kenken
+puzzle took about 1.6s so it definitely runs slower. It also hangs for puzzles larger than 4x4
+while kenken can still solve them quickly.
+
+[statistics, fd_set_vector_max(255), test_4(N,C), kenken(N,C,T), statistics.]
+
+real_time
+|=============================
+|Trial|Start   |End     |Total
+|1    |9.252s  |9.252   |0s
+|     |        |        |        
+|2    |22.842s |22.842s |0s
+|     |        |        |        
+|3    |26.311s |26.311s |0s
+|=============================
+
+[statistics, fd_set_vector_max(255), test_4(N,C), plain_kenken(N,C,T), statistics.]
+
+real_time
+|=============================
+|Trial|Start   |End     |Total
+|1    |161.937s|163.556s|1.619s
+|     |        |        |
+|2    |202.897s|204.527s|1.63s
+|     |        |        |
+|3    |224.177s|225.831s|1.654s
+|=============================
