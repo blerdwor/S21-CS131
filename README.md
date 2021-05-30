@@ -7,9 +7,9 @@ Taught by Professor Paul Eggert. https://web.cs.ucla.edu/classes/spring21/cs131/
 | Homework | Score  |
 | -------- | ------ |
 | 1        | 94.38  |
-| 2        | 99*    |
-| 3        |        |
-| 4        |        |
+| 2        | 100    |
+| 3        | 67.97* |
+| 4        | 98     |
 | 5        |        |
 
-*submitted 1 day late
+*submitted 4 days late
