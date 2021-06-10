@@ -11,5 +11,7 @@ Taught by Professor Paul Eggert. https://web.cs.ucla.edu/classes/spring21/cs131/
 | 3        | 67.97* |
 | 4        | 98     |
 | 5        | 89.2973|
+| 6        |        |
+|Project   | 84.04  |
 
 *submitted 4 days late
