@@ -6,7 +6,7 @@ import json
 import logging
 from collections import defaultdict
 
-API_KEY = 'AIzaSyDsfVacYwzSLbPoA4oe7GhivUsCxafIYg8'
+API_KEY = 'key'
 
 servers = {
     'Riley': 12160, 
